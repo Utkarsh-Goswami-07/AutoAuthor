@@ -2,13 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext(null);
 
-export const useAuth = () => {
-    const ctx = useContext(AuthContext);
-    if (!ctx) {
-        throw new Error("useAuth must be used within AuthProvider");
-    }
-    return ctx;
-};
+export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
@@ -21,15 +15,15 @@ export const AuthProvider = ({ children }) => {
 
         if (token && userStr) {
             try {
-                const parsedUser = JSON.parse(userStr);
-                setUser(parsedUser);
+                setUser(JSON.parse(userStr));
                 setIsAuthenticated(true);
             } catch {
                 localStorage.clear();
             }
         }
 
-        setLoading(false); // 🔥 CRITICAL: only false ONCE
+        // 🔑 VERY IMPORTANT
+        setLoading(false);
     }, []);
 
     const login = (userData, token) => {
@@ -43,7 +37,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.clear();
         setUser(null);
         setIsAuthenticated(false);
-        window.location.href = "/";
+        window.location.href = "/login";
     };
 
     return (
