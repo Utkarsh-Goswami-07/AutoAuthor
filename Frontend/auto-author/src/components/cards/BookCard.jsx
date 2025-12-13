@@ -1,12 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../utils/apiPaths";
 import { Edit, Trash2 } from "lucide-react";
+
+const BACKEND_URL =
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://autoauthor-backend.onrender.com";
 
 const BookCard = ({ book, onDelete }) => {
     const navigate = useNavigate();
 
     const coverImageUrl = book.coverImage
-        ? `${BASE_URL}${book.coverImage}`.replace(/\\/g, "/")
+        ? `${BACKEND_URL}${book.coverImage}`.replace(/\\/g, "/")
         : "";
 
     return (
@@ -54,9 +57,7 @@ const BookCard = ({ book, onDelete }) => {
             <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                 <div className="relative">
-                    <h3 className="text-sm font-semibold line-clamp-2">
-                        {book.title}
-                    </h3>
+                    <h3 className="text-sm font-semibold line-clamp-2">{book.title}</h3>
                     <p className="text-xs text-gray-300">{book.author}</p>
                 </div>
             </div>
