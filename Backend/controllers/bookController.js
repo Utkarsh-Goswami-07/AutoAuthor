@@ -146,8 +146,8 @@ const updateBookCover = async (req, res) => {
                 .json({ message: "No image file provided" });
         }
 
-        // ✅ IMPORTANT FIX: store frontend-safe path
-        book.coverImage = `/uploads/${req.file.filename}`;
+        // ✅ FIXED PATH (matches server.js static route)
+        book.coverImage = `/backend/uploads/${req.file.filename}`;
 
         const updatedBook = await book.save();
         res.status(200).json(updatedBook);
@@ -156,6 +156,7 @@ const updateBookCover = async (req, res) => {
         res.status(500).json({ message: "Server error" });
     }
 };
+
 
 module.exports = {
     createBook,
