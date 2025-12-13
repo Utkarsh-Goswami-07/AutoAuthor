@@ -1,5 +1,9 @@
 import axios from "axios";
-import { BASE_URL } from "./apiPaths";
+
+// ✅ Permanent safety net for backend URL
+const BASE_URL =
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://autoauthor-backend.onrender.com";
 
 const axiosInstance = axios.create({
     baseURL: BASE_URL,
@@ -19,23 +23,18 @@ axiosInstance.interceptors.request.use(
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
 // Response Interceptor
 axiosInstance.interceptors.response.use(
-    (response) => {
-        return response;
-    },
+    (response) => response,
     (error) => {
-        if (error.response) {
-            if (error.response.status === 500) {
-                console.error("Server error. Please try again later.");
-            } else if (error.code === "ECONNABORTED") {
-                console.error("Request timeout. Please try again.");
-            }
+        if (error.response?.status === 500) {
+            console.error("Server error. Please try again later.");
+        }
+        if (error.code === "ECONNABORTED") {
+            console.error("Request timeout. Please try again.");
         }
         return Promise.reject(error);
     }

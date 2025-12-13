@@ -1,8 +1,6 @@
 // BASE URL for backend
 export const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-console.log("🔥 BASE_URL =", BASE_URL);
-
 export const API_PATHS = {
     AUTH: {
         REGISTER: "/api/auth/register",
