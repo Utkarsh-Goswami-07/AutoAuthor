@@ -11,7 +11,7 @@ const exportRoutes = require("./routes/exportRoutes");
 
 const app = express();
 
-// Middleware to handle CORS
+// CORS
 app.use(
     cors({
         origin: "*",
@@ -20,20 +20,20 @@ app.use(
     })
 );
 
-// Connect Database
+// Connect DB
 connectDB();
 
-// Middleware
+// Body parser
 app.use(express.json());
 
-// Static folder for uploads
-app.use("/backend/uploads", express.static(path.join(__dirname, "uploads")));
+// ✅ CORRECT static uploads path
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// routes here
-app.use("/api/auth", authRoutes)
-app.use("/api/books", bookRoutes)
-app.use("/api/ai", aiRoutes)
-app.use("/api/export", exportRoutes)
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/books", bookRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/export", exportRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port: ${PORT}`));
