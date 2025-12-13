@@ -7,11 +7,10 @@ import DashboardLayout from "../components/layout/DashboardLayout";
 import Button from "../components/ui/Button";
 import { useAuth } from "../context/AuthContext";
 import axiosInstance from "../utils/axiosInstance";
-import { API_PATHS, BASE_URL } from "../utils/apiPaths";
+import { API_PATHS } from "../utils/apiPaths";
 import BookCard from "../components/cards/BookCard";
 import CreateBookModal from "../components/modals/CreateBookModal.jsx";
 
-/* ---------------- Skeleton Loader ---------------- */
 const BookCardSkeleton = () => (
     <div className="animate-pulse bg-white border border-slate-200 rounded-lg shadow-sm">
         <div className="w-full aspect-[16/25] bg-slate-200 rounded-t-lg"></div>
@@ -22,7 +21,6 @@ const BookCardSkeleton = () => (
     </div>
 );
 
-/* ---------------- Confirmation Modal ---------------- */
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
     if (!isOpen) return null;
 
@@ -30,14 +28,12 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
         <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex items-center justify-center min-h-screen px-4 text-center">
                 <div
-                    className="fixed inset-0 bg-black/50 transition-opacity"
+                    className="fixed inset-0 bg-black/50 bg-opacity-25 transition-opacity"
                     onClick={onClose}
                 ></div>
 
                 <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative">
-                    <h3 className="text-lg font-semibold text-slate-900 mb-4">
-                        {title}
-                    </h3>
+                    <h3 className="text-lg font-semibold text-slate-900 mb-4">{title}</h3>
                     <p className="text-slate-600 mb-6">{message}</p>
 
                     <div className="flex justify-end space-x-3">
@@ -57,36 +53,19 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => {
     );
 };
 
-/* ================= Dashboard Page ================= */
 const DashboardPage = () => {
+
     const [books, setBooks] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [bookToDelete, setBookToDelete] = useState(null);
-
     const { user } = useAuth();
     const navigate = useNavigate();
 
-    /* --------- FIX: Resolve cover image URL --------- */
-    const resolveCoverImage = (coverImage) => {
-        if (!coverImage) return null;
-
-        // Already absolute (production-safe)
-        if (coverImage.startsWith("http")) {
-            return coverImage;
-        }
-
-        // Relative path → backend URL
-        return `${BASE_URL}${coverImage}`;
-    };
-
-    /* ---------------- Fetch Books ---------------- */
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const response = await axiosInstance.get(
-                    API_PATHS.BOOKS.GET_BOOKS
-                );
+                const response = await axiosInstance.get(API_PATHS.BOOKS.GET_BOOKS);
                 setBooks(response.data);
             } catch (error) {
                 toast.error("Failed to fetch your eBooks.");
@@ -94,11 +73,9 @@ const DashboardPage = () => {
                 setIsLoading(false);
             }
         };
-
         fetchBooks();
     }, []);
 
-    /* ---------------- Delete Book ---------------- */
     const handleDeleteBook = async () => {
         if (!bookToDelete) return;
 
@@ -107,20 +84,15 @@ const DashboardPage = () => {
                 `${API_PATHS.BOOKS.DELETE_BOOK}/${bookToDelete}`
             );
 
-            setBooks((prev) =>
-                prev.filter((book) => book._id !== bookToDelete)
-            );
+            setBooks(books.filter((book) => book._id !== bookToDelete));
             toast.success("eBook deleted successfully.");
         } catch (error) {
-            toast.error(
-                error.response?.data?.message || "Failed to delete eBook."
-            );
+            toast.error(error.response?.data?.message || "Failed to delete eBook.");
         } finally {
             setBookToDelete(null);
         }
     };
 
-    /* ---------------- UI Handlers ---------------- */
     const handleCreateBookClick = () => {
         setIsCreateModalOpen(true);
     };
@@ -130,20 +102,16 @@ const DashboardPage = () => {
         navigate(`/editor/${bookId}`);
     };
 
-    /* ---------------- Render ---------------- */
     return (
         <DashboardLayout>
             <div className="container mx-auto p-6">
                 <div className="flex items-center justify-between mb-8">
                     <div>
-                        <h1 className="text-lg font-bold text-slate-900">
-                            All eBooks
-                        </h1>
+                        <h1 className="text-lg font-bold text-slate-900">All eBooks</h1>
                         <p className="text-[13px] text-slate-600 mt-1">
                             Create, edit, and manage all your AI-generated eBooks.
                         </p>
                     </div>
-
                     <Button
                         className="whitespace-nowrap"
                         onClick={handleCreateBookClick}
@@ -164,12 +132,9 @@ const DashboardPage = () => {
                         <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
                             <Book className="w-8 h-8 text-slate-400" />
                         </div>
-                        <h3 className="text-lg font-medium text-slate-900 mb-2">
-                            No eBooks Found
-                        </h3>
+                        <h3 className="text-lg font-medium text-slate-900 mb-2">No eBooks Found</h3>
                         <p className="text-slate-500 mb-6 max-w-md">
-                            You haven't created any eBooks yet. Get started by
-                            creating your first one.
+                            You haven't created any eBooks yet. Get started by creating your first one.
                         </p>
                         <Button onClick={handleCreateBookClick} icon={Plus}>
                             Create Your First eBook
@@ -180,15 +145,8 @@ const DashboardPage = () => {
                         {books.map((book) => (
                             <BookCard
                                 key={book._id}
-                                book={{
-                                    ...book,
-                                    coverImage: resolveCoverImage(
-                                        book.coverImage
-                                    ),
-                                }}
-                                onDelete={() =>
-                                    setBookToDelete(book._id)
-                                }
+                                book={book}
+                                onDelete={() => setBookToDelete(book._id)}
                             />
                         ))}
                     </div>
@@ -209,7 +167,7 @@ const DashboardPage = () => {
                 />
             </div>
         </DashboardLayout>
-    );
-};
+    )
+}
 
-export default DashboardPage;
+export default DashboardPage
