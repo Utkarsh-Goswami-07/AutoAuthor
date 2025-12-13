@@ -2,6 +2,7 @@ import InputField from "../ui/InputField";
 import Button from "../ui/Button";
 import { UploadCloud } from "lucide-react";
 
+// ✅ Use backend URL directly (same as BookCard)
 const BACKEND_URL =
     import.meta.env.VITE_BACKEND_URL ||
     "https://autoauthor-backend.onrender.com";
@@ -13,6 +14,8 @@ const BookDetailsTab = ({
                             isUploading,
                             fileInputRef,
                         }) => {
+
+    // ✅ FIXED cover image URL
     const coverImageUrl = book.coverImage
         ? `${BACKEND_URL}${book.coverImage}`.replace(/\\/g, "/")
         : "";
@@ -31,14 +34,12 @@ const BookDetailsTab = ({
                         value={book.title}
                         onChange={onBookChange}
                     />
-
                     <InputField
                         label="Author"
                         name="author"
                         value={book.author}
                         onChange={onBookChange}
                     />
-
                     <div className="md:col-span-2">
                         <InputField
                             label="Subtitle"
@@ -63,7 +64,7 @@ const BookDetailsTab = ({
                             className="w-32 h-48 object-cover rounded-lg bg-slate-100 shadow"
                         />
                     ) : (
-                        <div className="w-32 h-48 flex items-center justify-center bg-slate-100 text-slate-400 rounded-lg">
+                        <div className="w-32 h-48 flex items-center justify-center rounded-lg bg-slate-100 text-slate-400 text-sm">
                             No Cover
                         </div>
                     )}
